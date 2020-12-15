@@ -1,0 +1,46 @@
+body{
+    width: 100%;
+
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    left: 50%;
+    place-items: center;
+    text-align: center;
+}
+#p-one{
+    float: left;
+    padding: 10px;
+}
+
+#p-two{
+    float: right;
+    padding: 10px;
+}
+
+.players {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: inline-block;
+    padding: 10px;
+}
+
+
+.gameboard {
+    display: grid;
+    max-width: 300px;
+    grid-template-columns: auto auto auto;
+    padding:10px;
+    margin: auto;
+}
+
+.square {
+    padding: 10px;
+    font-size: 50px;
+    border: 1px solid black;
+    text-align: center;
+
+}
