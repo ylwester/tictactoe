@@ -32,9 +32,11 @@ body{
 .gameboard {
     display: grid;
     max-width: 300px;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     padding:10px;
     margin: auto;
+
 }
 
 .square {
@@ -42,5 +44,9 @@ body{
     font-size: 50px;
     border: 1px solid black;
     text-align: center;
+    height: 60px;
+}
 
+.square:hover {
+    cursor: pointer;
 }
