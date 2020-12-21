@@ -1,35 +1,13 @@
 const GameBoard = (() => {
     const board = [];
-    let lastMark = '';
     for(let i = 0; i<9; i++) {
         board.push('');
     }
 
     const displayMarks = (board) => {
-        document.getElementById("square1").textContent = board[8];
-        document.getElementById("square2").textContent = board[7];
-        document.getElementById("square3").textContent = board[6];
-        document.getElementById("square4").textContent = board[5];
-        document.getElementById("square5").textContent = board[4];
-        document.getElementById("square6").textContent = board[3];
-        document.getElementById("square7").textContent = board[2];
-        document.getElementById("square8").textContent = board[1];
-        document.getElementById("square9").textContent = board[0];
-    }
-
-    const addMark = () => {
-        const sq = document.querySelectorAll('.square');
-        sq.forEach((square) => {
-            square.addEventListener('click', ()=> {
-                if(lastMark === '' || lastMark === 'O'){
-                    board[square.dataset.key] = game.playerX.marker;
-                    lastMark = 'X';
-                } else {
-                    board[square.dataset.key] = game.playerO.marker;
-                    lastMark = 'O';
-                }
-                displayMarks(board);
-            });
+        const querySquare = document.querySelectorAll('.square');
+        querySquare.forEach((square) => {
+            square.textContent = board[square.dataset.key];
         });
     }
 
@@ -37,7 +15,6 @@ const GameBoard = (() => {
     return {
         getBoard,
         displayMarks,
-        addMark,
     }
 })();
 
@@ -54,16 +31,59 @@ const game = (() => {
     const playerX = createPlayer("Player 1", 'X');
     const playerO = createPlayer("Player 2", 'O');
 
-    const getTurn = () => {
+    let currentPlayer = playerX;
 
-    };
+    const changePlayer = () => {
+        if (currentPlayer === playerX) {
+            currentPlayer = playerO;
+        } else {
+            currentPlayer = playerX;
+        }
+    }
 
+    const possibleWinning = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,7],
+        [0,4,8],
+        [2,4,6],
+    ];
 
+    const checkWin = (board) => {
+        possibleWinning.forEach((item) => {
+            if(board[item[0]] === currentPlayer.marker &&
+                board[item[1]] === currentPlayer.marker &&
+                board[item[2]] === currentPlayer.marker){
+                console.log(currentPlayer.name + " has won.");
+            }
+        })
+    }
+
+    const addMark = (board) => {
+        const sq = document.querySelectorAll('.square');
+        sq.forEach((square) => {
+            square.addEventListener('click', ()=> {
+                if(currentPlayer.marker === 'O'){
+                    board[square.dataset.key] = game.playerX.marker;
+                    changePlayer();
+                } else {
+                    board[square.dataset.key] = game.playerO.marker;
+                    changePlayer();
+                }
+                GameBoard.displayMarks(board);
+                checkWin(board);
+            });
+        });
+    }
 
     return {
-        getTurn,
         playerO,
         playerX,
+        addMark,
+        checkWin,
     };
 })();
 
@@ -71,4 +91,6 @@ const game = (() => {
 
 GameBoard.displayMarks(GameBoard.getBoard());
 
-GameBoard.addMark();
+game.addMark(GameBoard.getBoard());
+
+game.checkWin(GameBoard.getBoard());
