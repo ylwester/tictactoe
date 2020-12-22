@@ -66,15 +66,17 @@ const game = (() => {
         const sq = document.querySelectorAll('.square');
         sq.forEach((square) => {
             square.addEventListener('click', ()=> {
-                if(currentPlayer.marker === 'O'){
-                    board[square.dataset.key] = game.playerX.marker;
-                    changePlayer();
-                } else {
-                    board[square.dataset.key] = game.playerO.marker;
-                    changePlayer();
+                if(board[square.dataset.key] === '') { // checks if empty spot to make mark
+                    if (currentPlayer.marker === 'O') {
+                        board[square.dataset.key] = game.playerX.marker;
+                        changePlayer();
+                    } else {
+                        board[square.dataset.key] = game.playerO.marker;
+                        changePlayer();
+                    }
+                    GameBoard.displayMarks(board);
+                    checkWin(board);
                 }
-                GameBoard.displayMarks(board);
-                checkWin(board);
             });
         });
     }
