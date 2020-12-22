@@ -40,6 +40,10 @@ body{
     resize: none;
 }
 
+.buttons-section {
+    margin-bottom: 30px;
+}
+
 .square {
     padding: 10px;
     font-size: 50px;

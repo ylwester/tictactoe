@@ -1,8 +1,8 @@
-const GameBoard = (() => {
+const gameBoard = (() => {
+    const divGameBoard = document.getElementById('gameboard');
+    divGameBoard.style.visibility = 'hidden';
+
     const board = [];
-    for(let i = 0; i<9; i++) {
-        board.push('');
-    }
 
     const displayMarks = (board) => {
         const querySquare = document.querySelectorAll('.square');
@@ -12,9 +12,25 @@ const GameBoard = (() => {
     }
 
     const getBoard = () => board;
+
+    const changeGameBoardVisibility = () => {
+        if(divGameBoard.style.visibility === 'hidden'){
+            divGameBoard.style.visibility = 'visible';
+        }
+    }
+
+    const refreshBoard = () => {
+        board.length = 0;
+        for(let i = 0; i<9; i++) {
+            board.push('');
+        }
+    }
+
     return {
         getBoard,
         displayMarks,
+        changeGameBoardVisibility,
+        refreshBoard,
     }
 })();
 
@@ -79,7 +95,7 @@ const game = (() => {
                             board[square.dataset.key] = game.playerO.marker;
                             changePlayer();
                         }
-                        GameBoard.displayMarks(board);
+                        gameBoard.displayMarks(board);
                         checkWin(board);
                     }
                 }
@@ -87,20 +103,26 @@ const game = (() => {
         });
 
     }
+    const startNewGame = () => {
+        endedGame = false;
+        gameBoard.changeGameBoardVisibility();
+        gameBoard.refreshBoard();
+        addMark(gameBoard.getBoard());
+        gameBoard.displayMarks(gameBoard.getBoard());
+    }
 
-    const newGame = () => {
-        game.addMark(GameBoard.getBoard());
+    const startButton = () => {
+        const button = document.getElementById('start-button');
+        button.addEventListener('click', () => {
+            startNewGame();
+        });
     }
 
     return {
         playerO,
         playerX,
-        addMark,
-        checkWin,
-        newGame,
+        startButton,
     };
 })();
 
-game.newGame();
-
-GameBoard.displayMarks(GameBoard.getBoard());
+game.startButton();
