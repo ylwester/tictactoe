@@ -33,6 +33,8 @@ const game = (() => {
 
     let currentPlayer = playerX;
 
+    let endedGame = false;
+
     const changePlayer = () => {
         if (currentPlayer === playerX) {
             currentPlayer = playerO;
@@ -58,6 +60,8 @@ const game = (() => {
                 board[item[1]] === currentPlayer.marker &&
                 board[item[2]] === currentPlayer.marker){
                 console.log(currentPlayer.name + " has won.");
+                endedGame = true;
+
             }
         })
     }
@@ -65,20 +69,27 @@ const game = (() => {
     const addMark = (board) => {
         const sq = document.querySelectorAll('.square');
         sq.forEach((square) => {
-            square.addEventListener('click', ()=> {
-                if(board[square.dataset.key] === '') { // checks if empty spot to make mark
-                    if (currentPlayer.marker === 'O') {
-                        board[square.dataset.key] = game.playerX.marker;
-                        changePlayer();
-                    } else {
-                        board[square.dataset.key] = game.playerO.marker;
-                        changePlayer();
+            square.addEventListener('click', () => {
+                if(!endedGame) {
+                    if (board[square.dataset.key] === '') { // checks if empty spot to make mark
+                        if (currentPlayer.marker === 'O') {
+                            board[square.dataset.key] = game.playerX.marker;
+                            changePlayer();
+                        } else {
+                            board[square.dataset.key] = game.playerO.marker;
+                            changePlayer();
+                        }
+                        GameBoard.displayMarks(board);
+                        checkWin(board);
                     }
-                    GameBoard.displayMarks(board);
-                    checkWin(board);
                 }
             });
         });
+
+    }
+
+    const newGame = () => {
+        game.addMark(GameBoard.getBoard());
     }
 
     return {
@@ -86,13 +97,10 @@ const game = (() => {
         playerX,
         addMark,
         checkWin,
+        newGame,
     };
 })();
 
-
+game.newGame();
 
 GameBoard.displayMarks(GameBoard.getBoard());
-
-game.addMark(GameBoard.getBoard());
-
-game.checkWin(GameBoard.getBoard());
