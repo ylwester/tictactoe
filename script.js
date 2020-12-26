@@ -42,22 +42,33 @@ const createPlayer = (name, marker) => {
 }
 
 
-
 const game = (() => {
-    const playerX = createPlayer("Player 1", 'X');
-    const playerO = createPlayer("Player 2", 'O');
 
-    let currentPlayer = playerX;
+    const players = () => {
+        const playerXname = document.getElementById('player-one').value;
+        const playerOname = document.getElementById('player-two').value;
+        const playerX = createPlayer(playerXname, 'X');
+        const playerO = createPlayer(playerOname, 'O');
+
+
+        return {
+            playerX,
+            playerO,
+        }
+    }
+
+    let currentPlayer = players().playerX;
 
     let endedGame = false;
 
     const changePlayer = () => {
-        if (currentPlayer === playerX) {
-            currentPlayer = playerO;
+        if (currentPlayer.marker === players().playerX.marker) {
+            currentPlayer = players().playerO;
         } else {
-            currentPlayer = playerX;
+            currentPlayer = players().playerX;
         }
     }
+
 
     const possibleWinning = [
         [0,1,2],
@@ -75,25 +86,31 @@ const game = (() => {
             if(board[item[0]] === currentPlayer.marker &&
                 board[item[1]] === currentPlayer.marker &&
                 board[item[2]] === currentPlayer.marker){
-                console.log(currentPlayer.name + " has won.");
+                displayGameStatus(currentPlayer.name + " has won! Congratulations!");
                 endedGame = true;
-
             }
         })
+    }
+
+    const displayGameStatus = (message) => {
+        const display = document.getElementById('display-score');
+        display.textContent = message;
     }
 
     const addMark = (board) => {
         const sq = document.querySelectorAll('.square');
         sq.forEach((square) => {
             square.addEventListener('click', () => {
+                console.log(currentPlayer.marker);
                 if(!endedGame) {
+                    displayGameStatus(currentPlayer.name + '\'s turn.');
                     if (board[square.dataset.key] === '') { // checks if empty spot to make mark
                         if (currentPlayer.marker === 'O') {
-                            board[square.dataset.key] = game.playerX.marker;
                             changePlayer();
+                            board[square.dataset.key] = currentPlayer.marker;
                         } else {
-                            board[square.dataset.key] = game.playerO.marker;
                             changePlayer();
+                            board[square.dataset.key] = currentPlayer.marker;
                         }
                         gameBoard.displayMarks(board);
                         checkWin(board);
@@ -104,11 +121,13 @@ const game = (() => {
 
     }
     const startNewGame = () => {
+        players();
         endedGame = false;
         gameBoard.changeGameBoardVisibility();
         gameBoard.refreshBoard();
         addMark(gameBoard.getBoard());
         gameBoard.displayMarks(gameBoard.getBoard());
+
     }
 
     const startButton = () => {
@@ -119,8 +138,6 @@ const game = (() => {
     }
 
     return {
-        playerO,
-        playerX,
         startButton,
     };
 })();
