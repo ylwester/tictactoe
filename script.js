@@ -45,10 +45,10 @@ const createPlayer = (name, marker) => {
 const game = (() => {
 
     const players = () => {
-        const playerXname = document.getElementById('player-one').value;
-        const playerOname = document.getElementById('player-two').value;
-        const playerX = createPlayer(playerXname, 'X');
-        const playerO = createPlayer(playerOname, 'O');
+        const playerXName = document.getElementById('player-one').value;
+        const playerOName = document.getElementById('player-two').value;
+        const playerX = createPlayer(playerXName, 'X');
+        const playerO = createPlayer(playerOName, 'O');
 
 
         return {
@@ -62,10 +62,15 @@ const game = (() => {
     let endedGame = false;
 
     const changePlayer = () => {
-        if (currentPlayer.marker === players().playerX.marker) {
-            currentPlayer = players().playerO;
-        } else {
-            currentPlayer = players().playerX;
+        checkWin(gameBoard.getBoard());
+        if (!endedGame) {
+            if (currentPlayer.marker === players().playerX.marker) {
+                currentPlayer = players().playerO;
+                displayGameStatus(currentPlayer.name + '\'s turn.');
+            } else {
+                currentPlayer = players().playerX;
+                displayGameStatus(currentPlayer.name + '\'s turn.');
+            }
         }
     }
 
@@ -76,7 +81,7 @@ const game = (() => {
         [6,7,8],
         [0,3,6],
         [1,4,7],
-        [2,5,7],
+        [2,5,8],
         [0,4,8],
         [2,4,6],
     ];
@@ -87,7 +92,12 @@ const game = (() => {
                 board[item[1]] === currentPlayer.marker &&
                 board[item[2]] === currentPlayer.marker){
                 displayGameStatus(currentPlayer.name + " has won! Congratulations!");
+                console.log("won");
                 endedGame = true;
+            }
+            if(!board.includes('') && !endedGame){
+                  displayGameStatus("It's a tie! Start a new game");
+                  endedGame = true;
             }
         })
     }
@@ -101,19 +111,12 @@ const game = (() => {
         const sq = document.querySelectorAll('.square');
         sq.forEach((square) => {
             square.addEventListener('click', () => {
-                console.log(currentPlayer.marker);
                 if(!endedGame) {
-                    displayGameStatus(currentPlayer.name + '\'s turn.');
                     if (board[square.dataset.key] === '') { // checks if empty spot to make mark
-                        if (currentPlayer.marker === 'O') {
-                            changePlayer();
-                            board[square.dataset.key] = currentPlayer.marker;
-                        } else {
-                            changePlayer();
-                            board[square.dataset.key] = currentPlayer.marker;
-                        }
+                        board[square.dataset.key] = currentPlayer.marker;
+                        changePlayer();
+                        console.log(board);
                         gameBoard.displayMarks(board);
-                        checkWin(board);
                     }
                 }
             });
@@ -121,13 +124,15 @@ const game = (() => {
 
     }
     const startNewGame = () => {
-        players();
+        currentPlayer = players().playerX;
+        displayGameStatus(currentPlayer.name + "'s turn.");
         endedGame = false;
         gameBoard.changeGameBoardVisibility();
         gameBoard.refreshBoard();
-        addMark(gameBoard.getBoard());
+        if(!endedGame){
+            addMark(gameBoard.getBoard());
+        }
         gameBoard.displayMarks(gameBoard.getBoard());
-
     }
 
     const startButton = () => {
